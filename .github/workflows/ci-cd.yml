@@ -1,0 +1,43 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.23'
+
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+
+      - name: Build and Push app Image
+        run: |
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/app:${{ github.sha }} ./app
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/app:${{ github.sha }}
+
+      - name: Build and Push data_generator Image
+        run: |
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/data_generator:${{ github.sha }} ./data_generator
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/data_generator:${{ github.sha }}
+
+      - name: Deploy to Remote Server
+        uses: appleboy/ssh-action@v0.1.5
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ${{ secrets.REMOTE_USER }}
+          key: ${{ secrets.REMOTE_SSH_KEY }}
+          script: |
+            cd /path/to/your/deployment
+            export TAG=${{ github.sha }}
+            docker-compose pull
+            docker-compose up -d --no-deps --build app data_generator

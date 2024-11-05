@@ -1,0 +1,30 @@
+{
+  "service": "auth-service",
+  "endpoint": "/api/login",
+  "error": "Invalid credentials",
+  "traceback": "File \"auth.py\", line 58, in login\n    raise AuthenticationError(\"Invalid username or password\")"
+},
+{
+  "service": "payment-service",
+  "endpoint": "/api/payments",
+  "error": "Payment gateway timeout",
+  "traceback": "File \"payment.py\", line 34, in process_payment\n    raise TimeoutError(\"Payment gateway did not respond\")"
+},
+{
+  "service": "order-service",
+  "endpoint": "/api/orders",
+  "error": "Order not found",
+  "traceback": "File \"order.py\", line 21, in get_order\n    raise NotFoundError(\"Order ID does not exist\")"
+},
+{
+  "service": "inventory-service",
+  "endpoint": "/api/inventory",
+  "error": "Insufficient stock",
+  "traceback": "File \"inventory.py\", line 47, in check_stock\n    raise StockError(\"Not enough items in stock\")"
+},
+{
+  "service": "notification-service",
+  "endpoint": "/api/notifications",
+  "error": "Email delivery failed",
+  "traceback": "File \"notification.py\", line 63, in send_email\n    raise EmailError(\"Failed to send email\")"
+}
