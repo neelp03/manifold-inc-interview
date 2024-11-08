@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   app:
     build: ./app
@@ -16,11 +18,10 @@ services:
       - app-network
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost/health"]
-      interval: 5s
-      timeout: 3s
+      interval: 10s
+      timeout: 5s
       retries: 5
-      start_period: 5s
-
+      start_period: 10s
 
   influxdb:
     image: influxdb:2.0
@@ -40,13 +41,14 @@ services:
       - app-network
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8086/health"]
-      interval: 5s
-      timeout: 3s
+      interval: 10s
+      timeout: 5s
       retries: 5
-      start_period: 5s
+      start_period: 10s
 
   data_generator:
     build: ./data_generator
+    container_name: data-generator
     depends_on:
       app:
         condition: service_healthy
